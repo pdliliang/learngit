@@ -1,0 +1,8 @@
+*** Settings ***
+Library           Selenium2Library
+
+*** Variables ***
+${登录用户名}          ATuser01
+${用户名密码}          admin123
+${核保用户名}          ATuser02
+${核保密码}           admin123

@@ -1,0 +1,201 @@
+*** Settings ***
+Resource          MyResource.txt
+
+*** Test Cases ***
+case1_投保
+    Open Browser    http://10.253.4.247:8080/bopspolicycreate/ordinarypolicy?channelid=1108&productid=1300140010&campaigndefid=1000235018&packagedefid=50120011    chrome    #保单号生成
+    Maximize Browser Window
+    ${保单生成}    Get Text    id=creationResult
+    ${保单号}    Evaluate    re.search(r'\\d+','${保单生成}').group()    modules=re
+    Go To    http://10.139.34.121:8080/index.htm    #BOPS网址
+    Input Text    id=username    ${登录用户名}
+    Input Text    id=pwd    ${用户名密码}
+    Click Button    id=loginBtn
+    #提示框点击确定
+    Wait Until Page Contains    尚未处理
+    #Sleep    5 seconds
+    Click Button    xpath=//button[contains(text(),'确定')]    #待办任务提示框点击确定
+    Mouse Over    xpath=//a[contains(text(),'财务收费')]
+    Wait Until Page Contains    逐单收费
+    #Sleep    5s
+    Click Link    xpath=//a[contains(text(),'逐单收费')]
+    Sleep    3s
+    Select Frame    id=frameWindow
+    Input Text    id=policyNo    ${保单号}    #输入保单号
+    Click Button    id=btnSearch    #点击查询
+    Sleep    3s
+    Click Element    xpath=//*[@id="grid"]/div/div[3]/table/tbody/tr[2]/td[1]/div/div/span    ##保单查询结果里打钩
+    Click Element    id=accountType    #选择账户类型
+    Sleep    1s
+    Select From List By Label    id=accountType    第三方
+    Click Element    id=accountNo    #选择账户账号
+    Select From List By Index    id=accountNo    2
+    Sleep    2s
+    Click Button    id=btnReceipt    #点击提交按钮
+    Wait Until Page Contains    提交成功!收据号:AR
+    #Page Should Contain
+    #Click Button    xpath=//button[contains(text(),'确定')]    #提交成功后、点击确定按钮
+    #Click Button    xpath=/html/body/div[4]/div[3]/button
+    Execute Javascript    $("button:contains('确定')").click()
+
+try
+    [Tags]    try
+    Open Browser    https://www.baidu.com/    Chrome
+    Capture Page Screenshot    screenshot-{index}.png
+    Maximize Browser Window
+    Element Should Be Visible    id=kw
+    #Input text    id=kw    selenium
+    #Set Screenshot Directory    ${d:\temp\}
+    Capture Page Screenshot    screenshot-{index}.png
+    [Teardown]    close browser
+
+try2
+    [Tags]    try
+    Open Browser    https://www.baidu.com/    Chrome
+    Capture Page Screenshot    screenshot-{index}.png
+    Maximize Browser Window
+    Element Should Be Visible    id=kw
+    #Input text    id=kw    selenium
+    #Set Screenshot Directory    ${d:\temp\}
+    Capture Page Screenshot    screenshot-{index}.png
+    [Teardown]    close browser
+
+case2_卡单号收费
+    [Tags]    case2
+    Open Browser    http://10.253.4.247:9080/bopsCardBuy/?userId=4525714    chrome    #卡单生成
+    Maximize Browser Window
+    ${卡单号}    Get Text    id=cardNo
+    Go To    http://10.139.34.121:8080/index.htm
+    Input Text    id=username    ${登录用户名}
+    Input Text    id=pwd    ${用户名密码}
+    Click Button    id=loginBtn
+    #提示框点击确定
+    Wait Until Page Contains    尚未处理    #等到弹出框出来
+    #Sleep    5 seconds
+    Click Button    xpath=//button[contains(text(),'确定')]    #弹出框点击确定
+    Mouse Over    xpath=//a[contains(text(),'财务收费')]
+    Wait Until Page Contains    逐单收费
+    #Sleep    5s
+    Click Link    xpath=//a[contains(text(),'逐单收费')]
+    Sleep    3s
+    Select Frame    id=frameWindow
+    Click Element    xpath=//*[@id="c3"]
+    Input Text    id=cardNo    ${卡单号}    #输入卡单号
+    Click Button    id=btnSearch    #点击查询
+    Sleep    3s
+    Click Element    xpath=//*[@id="grid"]/div/div[3]/table/tbody/tr[2]/td[1]/div/div/span    ##保单查询结果里打钩
+    Click Element    id=accountType    #选择账户类型
+    Sleep    1s
+    Select From List By Label    id=accountType    第三方
+    Click Element    id=accountNo    #选择账户账号
+    Select From List By Index    id=accountNo    2
+    Sleep    2s
+    Click Button    id=btnReceipt    #点击提交按钮
+    Wait Until Page Contains    提交成功!收据号:AR
+    #Page Should Contain
+    #Click Button    xpath=//button[contains(text(),'确定')]    #提交成功后、点击确定按钮
+    #Click Button    xpath=/html/body/div[4]/div[3]/button
+    Execute Javascript    $("button:contains('确定')").click()
+
+case3_批改录入、核保
+    [Tags]    case3_
+    Open Browser    http://10.253.4.247:8080/bopspolicycreate/ordinarypolicy?channelid=1108&productid=1300140010&campaigndefid=1000235018&packagedefid=50120011    chrome    #保单号生成
+    Maximize Browser Window
+    ${保单生成}    Get Text    id=creationResult
+    ${保单号}    Evaluate    re.search(r'\\d+','${保单生成}').group()    modules=re
+    Go To    http://10.139.34.121:8080/index.htm    #BOPS网址
+    Input Text    id=username    ${登录用户名}
+    Input Text    id=pwd    ${用户名密码}
+    Click Button    id=loginBtn
+    #提示框点击确定
+    Wait Until Page Contains    尚未处理
+    #Sleep    5 seconds
+    Click Button    xpath=//button[contains(text(),'确定')]    #待办任务提示框点击确定
+    Mouse Over    xpath=//a[contains(text(),'批改')]    #鼠标移到批改
+    Wait Until Page Contains    批改录入
+    #Sleep    5s
+    Click Link    xpath=//a[contains(text(),'批改录入')]    #点击批改录入
+    Sleep    2s
+    Select Frame    id=frameWindow
+    Click Button    id=add1    #点击新增按钮
+    Input Text    id=policyNo    ${保单号}    #输入保单号
+    Sleep    2s
+    Click Element    id=leaveOneCode    #选择批改一级类型
+    Sleep    1s
+    Select From List By Label    id=leaveOneCode    退保    #选择退保
+    Click Element    id=J_endorsementType    #选择批改二级类型
+    sleep    1s
+    Select From List By Label    id=J_endorsementType    退保    #选择退保
+    Sleep    2s
+    Click Button    id=doSubmit    #点击提交按钮
+    Wait Until Page Contains    添加成功
+    #Page Should Contain
+    #Click Button    xpath=//button[contains(text(),'确定')]    #提交成功后、点击确定按钮
+    #Click Button    xpath=/html/body/div[4]/div[3]/button
+    Execute Javascript    $("button:contains('确定')").click()
+    sleep    2s
+    Click Element    id=enEffectiveDate    #批改生效日期
+    Click Element    id=bar-item-button2    #批改生效日期点击确定
+    Click Element    id=edorReason    #选中退保原因
+    Select From List By Label    id=edorReason    其他    #其他
+    Input Text    id=customName    张三    #输入收款人名称
+    Input Text    id=customBankName    张三    #输入户名
+    Click Element    id=bank    #选中收款银行
+    #！！Select From List By Label    id=bankGirdDropList    PBC    #中国人民银行
+    sleep    2s
+    click element    xpath=//*[@id="bankGirdDropList"]/div/div[3]/table/tbody/tr[2]    #中国人民银行
+    Click Element    id=bankArea    #选中收款银行区域
+    sleep    1s
+    click element    xpath=//*[@id="bankAreaDropList"]/div/div[3]/table/tbody/tr[2]    #银行区域选择北京市
+    Click Element    id=bankBranchName    #选中开户银行
+    sleep    1s
+    click element    xpath=//*[@id="bankBranchNameGirdDropList"]/div/div[3]/table/tbody/tr[3]    #开户银行选择中国人民银行
+    Input Text    id=customBankAccount    6228480402637874213
+    Click Button    id=doSubmit    #点击提交
+    sleep    1s
+    Execute Javascript    $("button:contains('确定')").click()    #点击确定
+    sleep    1s
+    Execute Javascript    $("button:contains('确定')").click()    #点击确定
+    sleep    1s
+    click element    xpath=//span[contains(text(),'ATUser02')]    #选择核保用户圆按钮
+    Execute Javascript    $("button:contains('确定')").click()    #点击确定
+    Wait Until Page Contains    提交核保成功    #确认提供核保成功
+    Click Button    xpath=//button[contains(text(),'返回')]    #提示框点击返回
+    sleep    1s
+    #!退出表单！！
+    Unselect Frame
+    sleep    2s
+    Click element    xpath=//a[contains(text(),'退出')]    #点击退出应用
+    #批改核保
+    Go To    http://10.139.34.121:8080/index.htm    #BOPS网址
+    Input Text    id=username    ${核保用户名}
+    Input Text    id=pwd    ${核保密码}
+    Click Button    id=loginBtn
+    #提示框点击确定
+    Wait Until Page Contains    尚未处理
+    Click Button    xpath=//button[contains(text(),'确定')]    #待办任务提示框点击确定
+    Mouse Over    xpath=//a[contains(text(),'批改')]    #鼠标移到批改
+    Wait Until Page Contains    批改核保
+    Click Link    xpath=//a[contains(text(),'批改核保')]    #点击批改核保
+    sleep    2s
+    #选择表单！
+    Select Frame    id=frameWindow
+    sleep    2s
+    Input Text    name=policyNo    ${保单号}    #输入保单号
+    click button    id=btnSearch    #点击查询
+    sleep    1s
+    Wait Until Element Is Visible    id=grid    5s
+    Click Element    xpath=//*[@id="grid"]/div/div[3]/table/tbody/tr[2]/td[1]/div/div/input    #单选框
+    click button    id=issuedOper    #点击人工核保
+    sleep    1s
+    click element    id=endorsementStatus    #核保决定
+    sleep    1s
+    Select From List By Label    id=endorsementStatus    通过
+    sleep    1s
+    click button    id=doSubmit    #点击提交按钮
+    Wait Until Page Contains    核保通过    timeout=30s    error=页面没有看到核保通过的文字
+    click button    xpath=//button[contains(text(),'返回')]
+    unselect frame
+    sleep    1s
+    click element    xpath=//a[contains(text(),'退出')]
+    [Teardown]    close browser    #close current browser
