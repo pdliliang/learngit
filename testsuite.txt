@@ -38,28 +38,6 @@ case1_投保
     #Click Button    xpath=/html/body/div[4]/div[3]/button
     Execute Javascript    $("button:contains('确定')").click()
 
-try
-    [Tags]    try
-    Open Browser    https://www.baidu.com/    Chrome
-    Capture Page Screenshot    screenshot-{index}.png
-    Maximize Browser Window
-    Element Should Be Visible    id=kw
-    #Input text    id=kw    selenium
-    #Set Screenshot Directory    ${d:\temp\}
-    Capture Page Screenshot    screenshot-{index}.png
-    [Teardown]    close browser
-
-try2
-    [Tags]    try
-    Open Browser    https://www.baidu.com/    Chrome
-    Capture Page Screenshot    screenshot-{index}.png
-    Maximize Browser Window
-    Element Should Be Visible    id=kw
-    #Input text    id=kw    selenium
-    #Set Screenshot Directory    ${d:\temp\}
-    Capture Page Screenshot    screenshot-{index}.png
-    [Teardown]    close browser
-
 case2_卡单号收费
     [Tags]    case2
     Open Browser    http://10.253.4.247:9080/bopsCardBuy/?userId=4525714    chrome    #卡单生成
